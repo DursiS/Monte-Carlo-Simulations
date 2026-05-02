@@ -2,7 +2,7 @@ import random
 import math
 
 
-def simulate(k: int, payoffs: dict[int, float], _candidates: list[int]) -> None:
+def simulate(k: int, _candidates: list[int]) -> int:
     """Add to <dct> k: average payoff.
 
     Precondition: k > 0
@@ -15,36 +15,20 @@ def simulate(k: int, payoffs: dict[int, float], _candidates: list[int]) -> None:
             choice = candidate
             break
 
-    if choice == max(_candidates):
-        payoff = 1
-    else:
-        payoff = 0
-
-    payoffs[k] = payoff
-    simulations += 1
-
-
-def get_optimal_k(payoffs: dict[int, float], _n: int) -> float:
-    """Find which key k in <dct> gives the highest average payoff
-
-    Precondition: <dct> is non-empty mapping positive integers to integers.
-    """
-
-    total = 0
-    for k in list(payoffs.keys()):
-        total += payoffs[k]
-    return total // n
+    return 1 if choice == max(_candidates) else 0
 
 
 if __name__ == "__main__":
-    n = 1000  # Optimizing a permutation of
+    n = 10000  # Optimizing a permutation of n consecutive numbers
     candidates = list(range(1, n + 1))
     random.shuffle(candidates)
-    k_payoff_dct = {}
 
+    # Calculate expected payoff
+    total_payoff = 0
     for k in range(1, n - 1):
-        simulate(k, k_payoff_dct, candidates)
+        total_payoff += simulate(k, candidates)
+    average_payoff = total_payoff / n
 
-    print(k_payoff_dct)
-    optimal = round(n / math.exp(1))
-    print(f"Got: {get_optimal_k(k_payoff_dct, n)}; Expected: {optimal}")
+    # Print it
+    optimal = round(n / math.exp(1)) / n
+    print(f"Got: {average_payoff}; Expected: {optimal}")
